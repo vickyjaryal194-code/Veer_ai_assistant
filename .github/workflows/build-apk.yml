@@ -1,1 +1,23 @@
+name: Build VEER AI APK
 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Check index.html
+        run: |
+          if [ ! -s index.html ]; then
+            echo "ERROR: index.html is empty"
+            exit 1
+          fi
+          echo "index.html exists"
+          
