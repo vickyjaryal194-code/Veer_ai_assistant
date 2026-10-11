@@ -53,12 +53,13 @@ export default {
         { reply: result.response || "Abhi jawab nahi mila." },
         { headers: cors }
       );
-    } catch (error) {
+        } catch (error) {
       return Response.json(
-        { error: "AI setup check karo: Worker AI binding aur model availability." },
+        {
+          error: error instanceof Error
+            ? error.message
+            : String(error)
+        },
         { status: 500, headers: cors }
       );
     }
-  }
-};
-
