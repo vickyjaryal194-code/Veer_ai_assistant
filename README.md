@@ -50,10 +50,14 @@ document.getElementById('form').addEventListener('submit',async e=>{
  try{
   const response = await fetch(
   'https://veer-ai-assistant.vickyjaryal006.workers.dev/api/chat',
-   method:'POST',
-   headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({message:text})
-  });
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: text })
+  }
+);
   const data=await response.json();
   if(!response.ok)throw new Error();
   pending.textContent=data.reply||data.response||'जवाब नहीं मिला।';
