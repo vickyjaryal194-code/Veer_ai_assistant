@@ -16,11 +16,10 @@ function jsonResponse(data, status = 200) {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+
     if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: cors
-      });
+      return new Response(null, { status: 204, headers: cors });
     }
 
     if (request.method === "GET") {
@@ -30,10 +29,11 @@ export default {
       });
     }
 
-    if (request.method !== "POST") {
-      return jsonResponse({
-        error: "Only GET and POST requests are supported."
-      }, 405);
+    if (
+      request.method !== "POST" ||
+      (url.pathname !== "/" && url.pathname !== "/api/chat")
+    ) {
+      return jsonResponse({ error: "Route not found." }, 404);
     }
 
     try {
@@ -52,7 +52,7 @@ export default {
 
       if (!env.AI || typeof env.AI.run !== "function") {
         return jsonResponse({
-          error: "AI binding nahi mili. Cloudflare Worker mein AI binding ka naam AI hona chahiye."
+          error: "AI binding nahi mili. Cloudflare mein AI binding ka naam AI rakho."
         }, 500);
       }
 
@@ -62,8 +62,7 @@ export default {
           messages: [
             {
               role: "system",
-              content:
-                "You are VEER AI, a friendly and helpful Hindi AI assistant. Reply naturally in Hindi or Hinglish. Be clear, accurate, and concise."
+              content: "You are VEER AI, a friendly Hindi AI assistant. Reply naturally in Hindi or Hinglish. Be accurate and concise."
             },
             {
               role: "user",
@@ -78,7 +77,7 @@ export default {
 
       if (typeof reply !== "string" || !reply.trim()) {
         return jsonResponse({
-          error: "AI ne khaali jawab diya. Dobara try karo."
+          error: "AI se khaali jawab mila."
         }, 502);
       }
 
@@ -86,7 +85,6 @@ export default {
         success: true,
         reply: reply.trim()
       });
-
     } catch (error) {
       console.error("VEER AI error:", error);
 
