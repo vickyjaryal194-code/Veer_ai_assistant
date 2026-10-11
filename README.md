@@ -48,7 +48,8 @@ document.getElementById('form').addEventListener('submit',async e=>{
  input.value='';
  const pending=add('VEER AI जवाब सोच रहा है…','bot');
  try{
-  const response = await fetch('https://veer-ai-assistant.vickyjaryal006.workers.dev', {
+  const response = await fetch(
+  'https://veer-ai-assistant.vickyjaryal006.workers.dev/api/chat',
    method:'POST',
    headers:{'Content-Type':'application/json'},
    body:JSON.stringify({message:text})
