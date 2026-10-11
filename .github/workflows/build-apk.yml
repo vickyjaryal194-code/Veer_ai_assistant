@@ -1,3 +1,5 @@
+
+          
 name: Build VEER AI APK
 
 on:
@@ -6,18 +8,48 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Get source code
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Check index.html
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Create Android web app
         run: |
-          if [ ! -s index.html ]; then
-            echo "ERROR: index.html is empty"
-            exit 1
-          fi
-          echo "index.html exists"
-          
+          mkdir -p www
+          cp index.html www/index.html
+          npm init -y
+          npm install @capacitor/core@7 @capacitor/android@7
+          npm install --save-dev @capacitor/cli@7
+          npx cap init "VEER AI" "com.veerai.assistant" --web-dir www
+          npx cap add android
+          npx cap sync android
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: VEER-AI-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
