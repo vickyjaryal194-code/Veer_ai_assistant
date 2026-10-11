@@ -1,1 +1,66 @@
 
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEER AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:#f4f7ff;font-family:Arial,sans-serif}
+header{padding:20px;background:#151d33;border-bottom:1px solid #293653}
+h1{margin:0;color:#65e4ff}
+header p{margin:6px 0 0;color:#b7c4dd}
+#chat{height:calc(100dvh - 180px);overflow:auto;padding:16px}
+.msg{padding:12px 14px;margin:10px 0;border-radius:14px;max-width:88%;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{background:#1b2944}
+.user{background:#145d78;margin-left:auto}
+form{position:fixed;bottom:0;left:0;right:0;padding:12px;background:#151d33;display:flex;gap:8px}
+input{min-width:0;flex:1;padding:13px;border-radius:12px;border:1px solid #425272;background:#0b1020;color:white}
+button{padding:12px;border:0;border-radius:12px;background:#65e4ff;color:#07121d;font-weight:bold}
+</style>
+</head>
+<body>
+<header>
+<h1>VEER AI</h1>
+<p>तुम्हारा हिंदी AI सहायक</p>
+</header>
+<div id="chat">
+<div class="msg bot">नमस्ते! मैं VEER AI हूँ। अभी मेरा शुरुआती चैट इंटरफ़ेस तैयार है। असली AI जवाब के लिए मुझे AI सेवा से जोड़ना होगा।</div>
+</div>
+<form id="form">
+<input id="message" placeholder="यहाँ अपना संदेश लिखो..." autocomplete="off">
+<button type="button" id="mic" aria-label="बोलकर लिखें">🎙️</button>
+<button type="submit">भेजो</button>
+</form>
+<script>
+const chat=document.getElementById('chat');
+const input=document.getElementById('message');
+function add(text,cls){
+ const el=document.createElement('div');
+ el.className='msg '+cls;
+ el.textContent=text;
+ chat.appendChild(el);
+ chat.scrollTop=chat.scrollHeight;
+}
+document.getElementById('form').addEventListener('submit',e=>{
+ e.preventDefault();
+ const text=input.value.trim();
+ if(!text)return;
+ add(text,'user');
+ input.value='';
+ add('तुम्हारा संदेश मिला! असली AI जवाब पाने के लिए AI सेवा अभी कनेक्ट करनी बाकी है।','bot');
+});
+document.getElementById('mic').addEventListener('click',()=>{
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){add('इस WebView में आवाज़ से लिखना उपलब्ध नहीं है। अपने कीबोर्ड का 🎙️ बटन इस्तेमाल करो।','bot');return;}
+ const rec=new SR();
+ rec.lang='hi-IN';
+ rec.onresult=e=>{input.value=e.results[0][0].transcript;};
+ rec.onerror=()=>add('आवाज़ पहचान नहीं हुई। माइक्रोफ़ोन अनुमति जाँचो।','bot');
+ rec.start();
+});
+</script>
+</body>
+</html>
+
