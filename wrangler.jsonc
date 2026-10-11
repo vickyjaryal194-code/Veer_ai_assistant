@@ -1,0 +1,11 @@
+
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "veer-ai-assistant",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-11",
+  "workers_dev": true,
+  "ai": {
+    "binding": "AI"
+  }
+}
